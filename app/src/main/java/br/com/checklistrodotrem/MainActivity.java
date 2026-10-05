@@ -21,7 +21,117 @@ public class MainActivity extends Activity {
     boolean validBasic(){if(driver.getText().toString().trim().isEmpty()||tractor.getText().toString().trim().isEmpty()||trailer1.getText().toString().trim().isEmpty()){Toast.makeText(this,"Preencha os campos obrigatórios.",Toast.LENGTH_SHORT).show();return false;}if(type.getSelectedItemPosition()==0&&trailer2.getText().toString().trim().isEmpty()){Toast.makeText(this,"Informe a placa da carreta 2 para Rodotrem.",Toast.LENGTH_SHORT).show();return false;}return true;}
     void startChecklist(){if(!validBasic())return;showQuestions();}
     TextView section(String s){TextView t=tv(s,17,TEXT);t.setTypeface(Typeface.DEFAULT,Typeface.BOLD);t.setPadding(0,16,0,8);return t;}
-    void showQuestions(){page();top("Checklist");scroll();TextView progress=tv("1 de 34",13,BLUE);content.addView(progress);groups.clear();obs.clear();for(int i=0;i<34;i++){LinearLayout card=new LinearLayout(this);card.setOrientation(LinearLayout.VERTICAL);card.setPadding(16,12,16,12);GradientDrawable bg=new GradientDrawable();bg.setColor(Color.WHITE);bg.setStroke(1,Color.rgb(225,232,238));bg.setCornerRadius(16);card.setBackground(bg);TextView q=tv(String.format(Locale.getDefault(),"%02d  %s",i+1,qs[i]),16,TEXT);q.setTypeface(Typeface.DEFAULT,Typeface.BOLD);card.addView(q);RadioGroup g=new RadioGroup(this);g.setOrientation(RadioGroup.VERTICAL);String[] options=types[i].equals("sim_nao")?new String[]{"Sim","Não"}:types[i].equals("valvula")?new String[]{"Aço Inox","Alumínio"}:types[i].equals("carregamento")?new String[]{"Bottom","Top","Bottom/Top"}:new String[]{"Conforme","Não Conforme","Não Aplicável"};for(String o:options){RadioButton r=new RadioButton(this);r.setText(o);r.setTextSize(15);r.setTextColor(TEXT);r.setPadding(8,5,8,5);g.addView(r,new RadioGroup.LayoutParams(-1,48));}final int idx=i;EditText e=new EditText(this);e.setHint("Observação (obrigatória se não conforme)");e.setMinLines(2);e.setGravity(Gravity.TOP);e.setVisibility(View.GONE);e.setPadding(12,8,12,8);card.addView(g);card.addView(e,new LinearLayout.LayoutParams(-1,72));g.setOnCheckedChangeListener((group,checked)->{if(checked!=-1){String val=((RadioButton)group.findViewById(checked)).getText().toString();boolean show=val.equals("Não")||val.equals("Não Conforme");e.setVisibility(show?View.VISIBLE:View.GONE);if(!show)e.setText("");}});groups.add(g);obs.add(e);content.addView(card,new LinearLayout.LayoutParams(-1,-2){{topMargin=10;}});}Button finish=btn("Finalizar Checklist  ✓",GREEN);finish.setOnClickListener(v->finishChecklist());content.addView(finish,lp(1,18));}
+   void showQuestions(){
+    page();
+    top("Checklist de Segurança");
+    scroll();
+
+    TextView progress=tv("34 ITENS • RESPONDA TODOS",13,BLUE);
+    progress.setTypeface(Typeface.DEFAULT,Typeface.BOLD);
+    progress.setPadding(4,4,4,10);
+    content.addView(progress);
+
+    groups.clear();
+    obs.clear();
+
+    for(int i=0;i<34;i++){
+        LinearLayout card=new LinearLayout(this);
+        card.setOrientation(LinearLayout.VERTICAL);
+        card.setPadding(16,14,16,14);
+
+        GradientDrawable bg=new GradientDrawable();
+        bg.setColor(Color.WHITE);
+        bg.setStroke(1,Color.rgb(225,232,238));
+        bg.setCornerRadius(18);
+        card.setBackground(bg);
+        card.setElevation(3);
+
+        TextView q=tv(
+            String.format(Locale.getDefault(),"%02d  %s",i+1,qs[i]),
+            16,
+            TEXT
+        );
+        q.setTypeface(Typeface.DEFAULT,Typeface.BOLD);
+        q.setPadding(0,0,0,6);
+        card.addView(q);
+
+        RadioGroup g=new RadioGroup(this);
+        g.setOrientation(RadioGroup.VERTICAL);
+
+        String[] options=
+            types[i].equals("sim_nao")
+                ? new String[]{"Sim","Não"}
+            : types[i].equals("valvula")
+                ? new String[]{"Aço Inox","Alumínio"}
+            : types[i].equals("carregamento")
+                ? new String[]{"Bottom","Top","Bottom/Top"}
+            : new String[]{"Conforme","Não Conforme","Não Aplicável"};
+
+        for(String o:options){
+            RadioButton r=new RadioButton(this);
+            r.setText(o);
+            r.setTextSize(15);
+            r.setTextColor(TEXT);
+            r.setPadding(8,5,8,5);
+            g.addView(r,new RadioGroup.LayoutParams(-1,50));
+        }
+
+        EditText e=new EditText(this);
+        e.setHint("Observação (obrigatória se não conforme)");
+        e.setMinLines(2);
+        e.setGravity(Gravity.TOP);
+        e.setVisibility(View.GONE);
+        e.setPadding(12,8,12,8);
+
+        card.addView(g);
+        card.addView(e,new LinearLayout.LayoutParams(-1,78));
+
+        g.setOnCheckedChangeListener((group,checked)->{
+            if(checked!=-1){
+                String val=((RadioButton)group.findViewById(checked))
+                    .getText().toString();
+
+                boolean show=
+                    val.equals("Não") ||
+                    val.equals("Não Conforme");
+
+                e.setVisibility(show ? View.VISIBLE : View.GONE);
+
+                if(!show){
+                    e.setText("");
+                }
+            }
+        });
+
+        groups.add(g);
+        obs.add(e);
+
+        LinearLayout.LayoutParams cp=
+            new LinearLayout.LayoutParams(-1,-2);
+        cp.topMargin=10;
+        content.addView(card,cp);
+    }
+
+    LinearLayout bottom=new LinearLayout(this);
+    bottom.setPadding(14,8,14,8);
+    bottom.setBackgroundColor(Color.WHITE);
+
+    Button finish=btn("✓  FINALIZAR CHECKLIST",GREEN);
+    finish.setTextSize(17);
+    finish.setTypeface(Typeface.DEFAULT,Typeface.BOLD);
+    finish.setMinHeight(60);
+    finish.setOnClickListener(v->finishChecklist());
+
+    bottom.addView(
+        finish,
+        new LinearLayout.LayoutParams(-1,60)
+    );
+
+    root.addView(
+        bottom,
+        new LinearLayout.LayoutParams(-1,76)
+    );
+}
     void finishChecklist(){try{JSONObject a=new JSONObject();int conf=0,nc=0,na=0;for(int i=0;i<34;i++){int id=groups.get(i).getCheckedRadioButtonId();if(id==-1){Toast.makeText(this,"Responda o item "+(i+1)+".",Toast.LENGTH_SHORT).show();return;}String val=((RadioButton)groups.get(i).findViewById(id)).getText().toString();String ob=obs.get(i).getText().toString();if((val.equals("Não")||val.equals("Não Conforme"))&&ob.trim().isEmpty()){Toast.makeText(this,"Informe a observação do item "+(i+1)+".",Toast.LENGTH_SHORT).show();return;}a.put("q"+(i+1),val);a.put("o"+(i+1),ob);if(val.equals("Conforme")||val.equals("Sim"))conf++;else if(val.equals("Não Conforme")||val.equals("Não"))nc++;else if(val.equals("Não Aplicável"))na++;}ContentValues v=new ContentValues();v.put("created_at",new SimpleDateFormat("dd/MM/yyyy HH:mm",Locale.getDefault()).format(new Date()));v.put("driver",driver.getText().toString());v.put("date",date.getText().toString());v.put("type",type.getSelectedItem().toString());v.put("tractor",tractor.getText().toString());v.put("trailer1",trailer1.getText().toString());v.put("trailer2",trailer2.getText().toString());v.put("answers",a.toString());long id=db.insert(v);showDone(id,conf,nc,na);}catch(Exception e){Toast.makeText(this,"Erro ao salvar: "+e.getMessage(),Toast.LENGTH_LONG).show();}}
     void showDone(long id,int conf,int nc,int na){page();top("Checklist concluído");scroll();TextView ok=tv("✓",52,GREEN);ok.setGravity(Gravity.CENTER);content.addView(ok);TextView t=tv("CHECKLIST CONCLUÍDO!",23,GREEN);t.setGravity(Gravity.CENTER);t.setTypeface(Typeface.DEFAULT,Typeface.BOLD);content.addView(t);content.addView(tv("Salvo no histórico deste aparelho.",15,MUTED));LinearLayout stats=new LinearLayout(this);stats.setGravity(Gravity.CENTER);stats.addView(stat(String.valueOf(conf),"Conformes",GREEN));stats.addView(stat(String.valueOf(nc),"Não conformes",RED));stats.addView(stat(String.valueOf(na),"N/A",MUTED));content.addView(stats,new LinearLayout.LayoutParams(-1,100));Button pdf=btn("▣  Gerar PDF",BLUE);pdf.setOnClickListener(v->makePdf(id));content.addView(pdf,lp(1,16));Button hist=btn("▤  Ver Histórico",NAVY);hist.setOnClickListener(v->showHistory());content.addView(hist,lp(1,10));Button home=btn("⌂  Início",Color.rgb(92,111,128));home.setOnClickListener(v->showHome());content.addView(home,lp(1,10));}
     TextView stat(String n,String l,int c){TextView t=tv(n+"\n"+l,18,c);t.setGravity(Gravity.CENTER);t.setTypeface(Typeface.DEFAULT,Typeface.BOLD);t.setPadding(10,10,10,10);return t;}

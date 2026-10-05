@@ -1,0 +1,36 @@
+CHECKLIST RODOTREM / LS - COMO GERAR O APK SEM ANDROID STUDIO
+
+Este projeto ja esta preparado para compilacao.
+
+METODO 1 - MAIS FACIL (PELO NAVEGADOR, SEM INSTALAR ANDROID STUDIO)
+
+1. Crie uma conta no GitHub em https://github.com/ (se ainda nao tiver).
+2. Crie um novo repositorio, por exemplo: ChecklistRodotrem.
+3. Envie TODOS os arquivos desta pasta para o repositorio.
+4. No GitHub, abra a aba "Actions".
+5. Na esquerda, escolha "Gerar APK - Checklist Rodotrem".
+6. Clique em "Run workflow" e confirme.
+7. Aguarde a compilacao terminar (normalmente alguns minutos).
+8. Abra a execucao concluida.
+9. Na parte de "Artifacts", baixe "ChecklistRodotrem-apk".
+10. Dentro do arquivo baixado estara o app-debug.apk.
+
+IMPORTANTE: O workflow ja instala Java, Android SDK 35 e Gradle 8.9 automaticamente.
+Voce nao precisa abrir o Android Studio para esse metodo.
+
+METODO 2 - PELO WINDOWS
+
+O arquivo GERAR_APK.bat pode ser usado se o computador ja tiver o Android SDK e o
+Gradle instalados. Clique duas vezes nele para gerar o APK.
+
+ONDE O APK FICA
+
+app\build\outputs\apk\debug\app-debug.apk
+
+SOBRE O APK
+
+Este e um APK de teste (debug). Ele pode ser instalado diretamente em um aparelho
+Android com a instalacao de apps de fontes desconhecidas permitida.
+
+Se futuramente quiser publicar na Play Store, sera necessario gerar uma versao
+assinada (release) com uma chave de assinatura.
